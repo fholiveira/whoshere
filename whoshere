@@ -1,0 +1,22 @@
+#!/bin/bash
+cd $(readlink -f "$(dirname "$BASH_SOURCE")")
+
+source whoshere.d/commands
+
+case $1 in
+  -v|--version)
+    echo '0.1.0'
+  ;;
+  -V|--verbose)
+    show_verbose
+  ;;
+  '')
+    show
+  ;;
+  index)
+    whoshere.d/index "${@:2}"
+  ;;
+  -h|--help|*)
+    cat whoshere.d/help
+  ;;
+esac

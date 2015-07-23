@@ -1,0 +1,6 @@
+index_path=~/.whoshere
+temp_path=whoshere.d/tmp
+
+error_param_missing=3
+error_duplicated_mac=5
+error_invalid_param_value=4

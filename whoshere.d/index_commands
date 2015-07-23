@@ -1,0 +1,81 @@
+#!/bin/bash
+
+source whoshere.d/globals
+
+function show_all() {
+  cat $index_path \
+    | grep $name$ --ignore-case \
+    | cut --fields=2 \
+    | sort \
+    | uniq \
+    | while read -r; do 
+        echo -ne "$REPLY:\n  " && show_by_name "$REPLY";
+      done
+}
+
+function show_by_name() {
+  local name=$1
+
+  cat $index_path \
+    | grep $name$ --ignore-case \
+    | cut --fields=1 \
+    | tr '\n' ' '
+
+  echo -ne "\n"
+}
+
+function contains_name() {
+  local name=$1
+  [ $(grep -c $name$ --ignore-case $index_path) -gt 0 ];
+}
+
+function delete_by_name() {
+  local name=$1
+
+  [[ -z $name ]] \
+    && echo "You must inform a name to delete" \
+    && exit $error_param_missing
+
+  ! contains_name "$name" \
+    && echo "The name '$name' does not appear in the index." \
+    && exit $error_param_missing
+    
+  cat $index_path \
+    | grep $name$ --ignore-case --invert-match \
+    | sort --unique --output=$index_path
+}
+
+function get_name_by_mac() {
+  local macaddress=$1
+
+  cat $index_path \
+    | grep ^$macaddress --ignore-case \
+    | cut --field=2
+}
+
+function add() {
+  local macaddress=$2
+  local name=$1
+
+
+  [[ -z $name || -z $macaddress ]] \
+    && echo "You must inform name and MAC address" \
+    && exit $error_param_missing
+
+  [[ ! $macaddress =~ ^([0-9a-F]{2}[:-]){5}([0-9a-F]{2})$ ]] \
+    && echo "You must inform a valid MAC address" \
+    && exit $error_invalid_param_value
+
+  local macOwner=$(get_name_by_mac $macaddress)
+  [[ -n $macOwner ]] \
+    && echo "The MAC '$macaddress' is already assigned to '$macOwner'" \
+    && exit $error_duplicated_mac
+
+  echo -e "${macaddress//-/:}\t$name" >> $index_path
+}
+
+function sort_ascending() {
+  cat $index_path \
+    | awk -F'\t' '{print tolower($1)"\t"$2}' \
+    | sort --unique --output=$index_path
+}
