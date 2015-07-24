@@ -4,39 +4,47 @@ source whoshere.d/globals
 
 function show_all() {
   cat $index_path \
-    | grep $name$ --ignore-case \
     | cut --fields=2 \
-    | sort \
-    | uniq \
-    | while read -r; do 
-        echo -ne "$REPLY:\n  " && show_by_name "$REPLY";
-      done
+    | sort --unique \
+    | while read -r; do show_by_name "$REPLY"; done
 }
 
 function show_by_name() {
-  local name=$1
+  local name=$@
+
+  echo "$name:"
+  echo -n '  '
 
   cat $index_path \
-    | grep $name$ --ignore-case \
+    | grep -e "$name"$ \
     | cut --fields=1 \
     | tr '\n' ' '
+    
+  echo ''
+}
 
-  echo -ne "\n"
+function show() {
+  local query=$@
+
+  cat $index_path \
+    | grep $query --ignore-case \
+    | cut --fields=2 \
+    | while read -r; do show_by_name "$REPLY"; done
 }
 
 function contains_name() {
-  local name=$1
+  local name=$@
   [ $(grep -c $name$ --ignore-case $index_path) -gt 0 ];
 }
 
 function delete_by_name() {
-  local name=$1
+  local name=$@
 
   [[ -z $name ]] \
     && echo "You must inform a name to delete" \
     && exit $error_param_missing
 
-  ! contains_name "$name" \
+  ! contains_name $name \
     && echo "The name '$name' does not appear in the index." \
     && exit $error_param_missing
     
@@ -46,7 +54,7 @@ function delete_by_name() {
 }
 
 function get_name_by_mac() {
-  local macaddress=$1
+  local macaddress=$@
 
   cat $index_path \
     | grep ^$macaddress --ignore-case \
@@ -56,7 +64,6 @@ function get_name_by_mac() {
 function add() {
   local macaddress=$2
   local name=$1
-
 
   [[ -z $name || -z $macaddress ]] \
     && echo "You must inform name and MAC address" \

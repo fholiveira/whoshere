@@ -4,16 +4,16 @@ source whoshere.d/index_commands
 
 case $1 in
   -a)
-    add "$2" "$3"
+    add "$2" $3
     sort_ascending
   ;;
   -d)
-    delete_by_name "$2"
+    delete_by_name ${@:2}
   ;;
   '')
     show_all
   ;;
   *)
-    show_by_name "$1"
+    show $@
   ;;
 esac

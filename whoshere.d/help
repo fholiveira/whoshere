@@ -5,7 +5,7 @@ Usage:
   whoshere [--verbose]
   whoshere index -a <name> <mac_address>
   whoshere index -d <name>
-  whoshere index [<name>]
+  whoshere index [<query>]
   whoshere --version
   whoshere --help
 
