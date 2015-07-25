@@ -1,5 +1,4 @@
-#!/bin/bash
-
+# vim: filetype=sh
 source whoshere.d/globals
 
 function show_all() {

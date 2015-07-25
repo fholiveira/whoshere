@@ -1,5 +1,4 @@
 #!/bin/bash
-
 source whoshere.d/index_commands
 
 case $1 in
