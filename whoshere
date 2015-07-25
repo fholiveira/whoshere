@@ -1,5 +1,5 @@
 #!/bin/bash
-cd $(readlink -f "$(dirname "$BASH_SOURCE")")
+cd $(readlink "$(dirname "$BASH_SOURCE")" --canonicalize)
 
 source whoshere.d/commands
 

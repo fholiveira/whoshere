@@ -12,8 +12,7 @@ function scan_network {
   send_ping_scan >> $temp_path
   send_ping_scan >> $temp_path
 
-  cat $temp_path \
-    | sort --unique \
+  sort $temp_path --unique \
     | join $index_path -
 }
 
