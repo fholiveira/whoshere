@@ -76,6 +76,6 @@ function add() {
 }
 
 function sort_ascending() {
-  awk -F'\t' '{print tolower($1)"\t"$2}' $index_path \
+  awk --field-separator='\t' '{print tolower($1)"\t"$2}' $index_path \
     | sort --unique --output=$index_path
 }

@@ -13,17 +13,17 @@ function scan_network {
   send_ping_scan >> $temp_path
 
   sort $temp_path --unique \
-    | join $index_path -
+    | join - $index_path -t $'\t'
 }
 
 function show_verbose {
   scan_network \
-    | awk '{ print $2" is online at "$3; }' \
+    | awk --field-separator='\t' '{ print $3" is online at "$2; }' \
     | sort --unique
 }
 
 function show {
   scan_network \
-    | cut --fields=2 --delimiter=' ' \
+    | cut --fields=3 --delimiter=$'\t' \
     | sort --unique
 }
