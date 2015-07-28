@@ -1,6 +1,4 @@
 # vim: filetype=sh
-source whoshere.d/globals
-
 function show_all() {
   cut $index_path --fields=2 \
     | sort --unique \

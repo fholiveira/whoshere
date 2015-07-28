@@ -3,9 +3,10 @@ cd $(readlink "$(dirname "$BASH_SOURCE")" --canonicalize)
 
 source whoshere.d/commands
 
-case $1 in
+parameter=$1
+case $parameter in
   -v|--version)
-    echo '0.1.0'
+    cat whoshere.d/version
   ;;
   -V|--verbose)
     show_verbose

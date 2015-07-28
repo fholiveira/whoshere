@@ -1,5 +1,6 @@
 #!/bin/bash
-source whoshere.d/index_commands
+source whoshere.d/globals
+source whoshere.d/index.d/commands
 
 case $1 in
   -a)
