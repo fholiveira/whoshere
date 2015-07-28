@@ -1,18 +1,11 @@
 # vim: filetype=sh
 source whoshere.d/globals
 
-function send_ping_scan {
-  sudo arp-scan --localnet --quiet 2>/dev/null \
-    | grep -E '([0-9]{1,3}[\.]){3}[0-9]{1,3}' \
-    | awk '{ print $2"\t"$1; }'
-}
-
 function scan_network {
-  send_ping_scan > $temp_path
-  send_ping_scan >> $temp_path
-  send_ping_scan >> $temp_path
-
-  sort $temp_path --unique \
+  sudo arp-scan --localnet --retry=6 --quiet 2>/dev/null \
+    | grep -E '([0-9]{1,3}[\.]){3}[0-9]{1,3}' \
+    | awk '{ print $2"\t"$1; }' \
+    | sort --unique \
     | join - $index_path -t $'\t'
 }
 
