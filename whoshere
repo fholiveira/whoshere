@@ -1,23 +1,30 @@
 #!/bin/bash
-cd $(readlink "$(dirname "$BASH_SOURCE")" --canonicalize)
+parameter=$1
+script_name=${BASH_SOURCE[0]}
+
+function script_path {
+  local SOURCE="$1"
+
+  while [ -h "$SOURCE" ]; do 
+    local DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+    SOURCE="$(readlink "$SOURCE")"
+    [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+  done
+
+  echo "$( dirname "$SOURCE" )" 
+}
+
+cd -P $(script_path $script_name) 
 
 source whoshere.d/commands
+source whoshere.d/globals
 
-parameter=$1
+[ ! -f $index_path ] && touch $index_path
+
 case $parameter in
-  -v|--version)
-    cat whoshere.d/version
-  ;;
-  -V|--verbose)
-    show_verbose
-  ;;
-  '')
-    show
-  ;;
-  index)
-    whoshere.d/index "${@:2}"
-  ;;
-  -h|--help|*)
-    cat whoshere.d/help
-  ;;
+  -v|--version)  cat whoshere.d/version ;;
+  -V|--verbose)  show_verbose ;;
+  '')            show ;;
+  index)         whoshere.d/index "${@:2}" ;;
+  -h|--help|*)   cat whoshere.d/help ;;
 esac

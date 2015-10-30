@@ -3,17 +3,8 @@ source whoshere.d/globals
 source whoshere.d/index.d/commands
 
 case $1 in
-  -a)
-    add "$2" $3
-    sort_ascending
-  ;;
-  -d)
-    delete_by_name ${@:2}
-  ;;
-  '')
-    show_all
-  ;;
-  *)
-    show $@
-  ;;
+  -a)  add "$2" $3 && sort_ascending ;;
+  -d)  delete_by_name ${@:2} ;;
+  '')  show_all ;;
+  *)   show $@ ;;
 esac
